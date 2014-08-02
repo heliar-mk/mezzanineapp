@@ -1,0 +1,31 @@
+{% extends "pages/page.html" %}
+
+{% load mezzanine_tags %}
+{{block.super}}
+{% block main %}
+{% if request.GET.sent %}
+    {% editable page.registration.response %}
+    {{ page.registration.response|richtext_filters|safe }}
+    {% endeditable %}
+{% else %}
+    {% with page.registration as page_registration %}
+    {% editable page_registration.content %}
+    {{ page_registration.content|richtext_filters|safe }}
+    {% endeditable %}
+{% endwith %}
+    {% errors_for form %}
+
+    <form class="mezzanine-form" method="post"{% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+        {% fields_for form %}
+        <div class="form-actions">
+            <input class="btn btn-primary btn-lg" type="submit" value="Submit">
+        </div>
+    </form>
+{% endif %}
+{% endblock %}
+{% block extra_js %}
+{{ block.super }}
+<script>
+$(function() {$('.mezzanine-form :input:visible:enabled:first').focus();});
+</script>
+{% endblock %}
